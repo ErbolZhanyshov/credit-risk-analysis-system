@@ -1,13 +1,15 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import joblib
 import time
+import plotly.graph_objects as go
 
 # =====================================================
 # PAGE CONFIG
 # =====================================================
+
 st.set_page_config(
     page_title="AI Credit Risk Analysis System",
     page_icon="🏦",
@@ -17,119 +19,273 @@ st.set_page_config(
 # =====================================================
 # LOAD MODELS
 # =====================================================
+
 lr_model = joblib.load("models/logistic_regression_model.pkl")
 dt_model = joblib.load("models/decision_tree_model.pkl")
 rf_model = joblib.load("models/random_forest_model.pkl")
 scaler = joblib.load("models/scaler.pkl")
 
 # =====================================================
-# CSS DESIGN (FINTECH DASHBOARD)
+# CUSTOM CSS
 # =====================================================
+
 st.markdown("""
 <style>
 
-.main { background-color:#f4f6f9; }
+html, body, [class*="css"] {
+    font-family: 'Segoe UI', sans-serif;
+}
 
-.block-container { padding-top:2rem; }
+.stApp {
+    background-color: #f4f6f9;
+}
+
+.main-title{
+    font-size:38px;
+    font-weight:700;
+    color:#1a2a6c;
+}
+
+.sub-title{
+    color:#6c757d;
+    font-size:16px;
+}
 
 .metric-card{
     background:white;
+    border-radius:16px;
     padding:20px;
-    border-radius:15px;
-    box-shadow:0px 4px 15px rgba(0,0,0,0.1);
+    box-shadow:0px 4px 15px rgba(0,0,0,0.08);
     text-align:center;
+    border-top:5px solid #1a2a6c;
 }
 
-.result-approved{
-    background:linear-gradient(135deg,#eafaf1,#d1f2eb);
-    border-left:8px solid #2ecc71;
-    padding:25px;
-    border-radius:15px;
-}
-
-.result-rejected{
-    background:linear-gradient(135deg,#fdecea,#fadbd8);
-    border-left:8px solid #e74c3c;
-    padding:25px;
-    border-radius:15px;
-}
-
-.stButton > button{
-    background:#1a2a6c;
-    color:white;
-    width:100%;
-    height:50px;
-    border:none;
-    border-radius:10px;
+.metric-value{
+    font-size:32px;
     font-weight:bold;
+    color:#1a2a6c;
 }
 
-.stButton > button:hover{
-    transform:translateY(-2px);
+.metric-label{
+    color:#6c757d;
+}
+
+.sidebar-card{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+            
+.stSelectbox,
+.stNumberInput,
+.stSlider{
+    background:white;
+    border-radius:10px;}
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================================
-# HEADER
+# SIDEBAR
 # =====================================================
-st.title("🏦 AI Credit Risk Analysis System")
-st.caption("Multi Model Banking AI Dashboard")
 
-# =====================================================
-# INPUT FORM
-# =====================================================
-st.markdown("## 👤 Customer Input")
+with st.sidebar:
 
-c1, c2, c3 = st.columns(3)
+    st.title("🏦 Navigation")
 
-with c1:
-    gender = st.selectbox("Gender", ["Male", "Female"])
-    married = st.selectbox("Married", ["Yes", "No"])
-
-with c2:
-    education = st.selectbox("Education", ["Graduate", "Not Graduate"])
-    loan_term = st.selectbox("Loan Term", [360, 240, 180, 120, 84])
-
-with c3:
-    credit_history = st.selectbox(
-        "Credit History",
-        ["Good (1)", "Bad (0)"]
+    menu = st.radio(
+        "Menu",
+        [
+            "Dashboard",
+            "Single Prediction",
+            "Bulk Prediction",
+            "Model Analytics",
+            "About"
+        ]
     )
 
-applicant_income = st.number_input("Applicant Income", 5400, step=500)
-coapplicant_income = st.number_input("Coapplicant Income", 0, step=500)
-loan_amount = st.slider("Loan Amount", 10, 500, 140)
+    st.markdown("---")
 
-analyze = st.button("🚀 Analyze Credit Risk")
+    st.subheader("ℹ️ About")
+
+    st.info("""
+    AI Credit Risk Analysis System
+
+    Hitit University
+
+    Computer Engineering
+    """)
 
 # =====================================================
-# ANALYSIS
+# HEADER
 # =====================================================
-if not analyze:
-    st.info("Fill the form and click Analyze.")
+
+st.markdown("""
+<div class="main-title">
+🏦 AI Credit Risk Analysis System
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="sub-title">
+Multi-Model Banking Decision Support Platform
+</div>
+""", unsafe_allow_html=True)
+
+st.write("")
+
+# =====================================================
+# SINGLE CUSTOMER ANALYSIS
+# =====================================================
+
+st.markdown("## 🧑‍💼 Single Customer Credit Analysis")
+
+st.caption(
+    "Enter customer financial information below to evaluate credit approval probability using multiple machine learning models."
+)
+
+st.write("")
+
+# =====================================================
+# FORM CARDS
+# =====================================================
+
+col1, col2, col3 = st.columns(3)
+
+# -------------------------------------------------
+# CUSTOMER PROFILE
+# -------------------------------------------------
+
+with col1:
+
+    st.markdown("### 👤 Customer Profile")
+
+    gender = st.selectbox(
+        "Gender",
+        ["Male", "Female"]
+    )
+
+    married = st.selectbox(
+        "Marital Status",
+        ["Yes", "No"]
+    )
+
+    dependents = st.selectbox(
+        "Dependents",
+        ["0", "1", "2", "3+"]
+    )
+
+    education = st.selectbox(
+        "Education",
+        ["Graduate", "Not Graduate"]
+    )
+
+    self_employed = st.selectbox(
+        "Self Employed",
+        ["No", "Yes"]
+    )
+
+# -------------------------------------------------
+# FINANCIAL PROFILE
+# -------------------------------------------------
+
+with col2:
+
+    st.markdown("### 💰 Financial Profile")
+
+    applicant_income = st.number_input(
+        "Applicant Income",
+        value=5400,
+        step=500
+    )
+
+    coapplicant_income = st.number_input(
+        "Coapplicant Income",
+        value=0,
+        step=500
+    )
+
+    loan_amount = st.slider(
+        "Loan Amount",
+        10,
+        500,
+        140
+    )
+
+    loan_term = st.selectbox(
+        "Loan Term (Months)",
+        [360, 240, 180, 120, 84]
+    )
+
+# -------------------------------------------------
+# CREDIT INFORMATION
+# -------------------------------------------------
+
+with col3:
+
+    st.markdown("### 🏦 Credit Information")
+
+    credit_history = st.selectbox(
+        "Credit History",
+        [
+            "Good (1.0)",
+            "Bad (0.0)"
+        ]
+    )
+
+    property_area = st.selectbox(
+        "Property Area",
+        [
+            "Urban",
+            "Semiurban",
+            "Rural"
+        ]
+    )
+
+st.write("")
+
+analyze = st.button(
+    "🚀 Analyze Credit Risk"
+)
+
+# =====================================================
+# MODEL ANALYSIS
+# =====================================================
 
 if analyze:
 
-    with st.spinner("AI models are processing..."):
-        time.sleep(0.8)
+    with st.spinner("Analyzing customer credit risk..."):
+        time.sleep(1)
 
-    # =========================
+    # ----------------------------------
     # ENCODING
-    # =========================
+    # ----------------------------------
+
     gender_v = 1 if gender == "Male" else 0
     married_v = 1 if married == "Yes" else 0
+
+    if dependents == "3+":
+        dependents_v = 3
+    else:
+        dependents_v = int(dependents)
+
     education_v = 0 if education == "Graduate" else 1
-    credit_v = 1 if credit_history == "Good (1)" else 0
+    self_emp_v = 1 if self_employed == "Yes" else 0
 
-    dependents_v = 0
-    self_emp_v = 0
-    property_v = 1
+    credit_v = 1 if credit_history == "Good (1.0)" else 0
 
-    # =========================
+    property_map = {
+        "Rural": 0,
+        "Semiurban": 1,
+        "Urban": 2
+    }
+
+    property_v = property_map[property_area]
+
+    # ----------------------------------
     # FEATURE VECTOR
-    # =========================
+    # ----------------------------------
+
     features = np.array([[
         gender_v,
         married_v,
@@ -146,82 +302,168 @@ if analyze:
 
     features_scaled = scaler.transform(features)
 
-    # =========================
+    # ----------------------------------
     # MODEL PREDICTIONS
-    # =========================
-    lr_pred = lr_model.predict(features_scaled)[0]
-    dt_pred = dt_model.predict(features_scaled)[0]
-    rf_pred = rf_model.predict(features_scaled)[0]
+    # ----------------------------------
 
     lr_prob = lr_model.predict_proba(features_scaled)[0][1]
     dt_prob = dt_model.predict_proba(features_scaled)[0][1]
     rf_prob = rf_model.predict_proba(features_scaled)[0][1]
 
-    ensemble_prob = (lr_prob + dt_prob + rf_prob) / 3
-    approved = ensemble_prob >= 0.5
+    ensemble_prob = (
+        lr_prob +
+        dt_prob +
+        rf_prob
+    ) / 3
+
+    st.markdown("---")
+    st.markdown("## 🎯 Prediction Results")
 
     # =====================================================
-    # MODEL RESULTS
+    # GAUGE CARDS
     # =====================================================
-    st.markdown("## 🤖 Model Outputs")
 
-    c1, c2, c3, c4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(4)
 
-    with c1:
-        st.metric("Logistic Regression", f"{lr_prob*100:.1f}%")
+    models = {
+        "Logistic Regression": lr_prob,
+        "Decision Tree": dt_prob,
+        "Random Forest": rf_prob,
+        "Ensemble": ensemble_prob
+    }
 
-    with c2:
-        st.metric("Decision Tree", f"{dt_prob*100:.1f}%")
+    columns = [col1, col2, col3, col4]
 
-    with c3:
-        st.metric("Random Forest", f"{rf_prob*100:.1f}%")
+    for (name, prob), col in zip(models.items(), columns):
 
-    with c4:
-        st.metric("Ensemble", f"{ensemble_prob*100:.1f}%")
+        with col:
+
+            fig = go.Figure(
+                go.Indicator(
+                    mode="gauge+number",
+                    value=prob * 100,
+                    number={'suffix': "%"},
+                    title={'text': name},
+                    gauge={
+                        'axis': {'range': [0, 100]},
+                        'bar': {'thickness': 0.3},
+                        'steps': [
+                            {'range': [0, 50], 'color': "#ff4d4f"},
+                            {'range': [50, 75], 'color': "#fadb14"},
+                            {'range': [75, 100], 'color': "#52c41a"}
+                        ]
+                    }
+                )
+            )
+
+            fig.update_layout(
+                height=250,
+                margin=dict(l=10,r=10,t=50,b=10)
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+            if prob >= 0.5:
+
+                st.success(
+                    f"Low Risk\n\nApproval Probability: {prob*100:.1f}%"
+                )
+
+            else:
+
+                st.error(
+                    f"High Risk\n\nRisk Score: {(1-prob)*100:.1f}%"
+                )
 
     # =====================================================
     # FINAL DECISION
     # =====================================================
-    st.markdown("## 🏦 Final Decision")
 
-    if approved:
-        st.markdown(f"""
-        <div class="result-approved">
-        <h2>✅ CREDIT APPROVED</h2>
-        <h3>Confidence: {ensemble_prob*100:.2f}%</h3>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("## 🏦 Final AI Decision")
+
+    if ensemble_prob >= 0.50:
+
+        st.success(
+            f"""
+            CREDIT APPROVED
+
+            Ensemble Confidence Score:
+            {ensemble_prob*100:.2f}%
+            """
+        )
+
+        st.info(
+            """
+            AI Recommendation:
+
+            • Credit history is positive
+
+            • Income level supports repayment
+
+            • Customer is considered low risk
+
+            • Loan approval is recommended
+            """
+        )
+
     else:
-        st.markdown(f"""
-        <div class="result-rejected">
-        <h2>❌ CREDIT REJECTED</h2>
-        <h3>Risk: {(1-ensemble_prob)*100:.2f}%</h3>
-        </div>
-        """, unsafe_allow_html=True)
+
+        st.error(
+            f"""
+            CREDIT REJECTED
+
+            Risk Score:
+            {(1-ensemble_prob)*100:.2f}%
+            """
+        )
+
+        st.warning(
+            """
+            AI Recommendation:
+
+            • Credit history is insufficient
+
+            • Risk level is high
+
+            • Additional collateral may be required
+
+            • Manual review is recommended
+            """
+        )
 
     # =====================================================
-    # SUMMARY
+    # CUSTOMER SUMMARY
     # =====================================================
-    st.markdown("## 📋 Summary")
 
-    col1, col2, col3 = st.columns(3)
+    st.markdown("---")
+    st.markdown("## 👤 Customer Summary")
 
-    col1.metric("Income", applicant_income)
-    col2.metric("Loan", loan_amount)
-    col3.metric("Term", loan_term)
+    s1, s2, s3, s4 = st.columns(4)
 
-    # =====================================================
-    # GRAPH
-    # =====================================================
-    st.markdown("## 📊 Model Comparison")
+    with s1:
+        st.metric(
+            "Applicant Income",
+            f"${applicant_income:,}"
+        )
 
-    df = pd.DataFrame({
-        "Model": ["LR", "DT", "RF"],
-        "Score": [lr_prob, dt_prob, rf_prob]
-    })
+    with s2:
+        st.metric(
+            "Coapplicant Income",
+            f"${coapplicant_income:,}"
+        )
 
-    fig, ax = plt.subplots()
-    ax.bar(df["Model"], df["Score"])
-    ax.set_ylabel("Probability")
+    with s3:
+        st.metric(
+            "Loan Amount",
+            f"${loan_amount:,}"
+        )
 
-    st.pyplot(fig)
+    with s4:
+        st.metric(
+            "Loan Term",
+            f"{loan_term} Months"
+        )
