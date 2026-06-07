@@ -302,13 +302,17 @@ if analyze:
 
     features_scaled = scaler.transform(features)
 
-    # ----------------------------------
-    # MODEL PREDICTIONS
-    # ----------------------------------
-
+    # Logistic Regression
     lr_prob = lr_model.predict_proba(features_scaled)[0][1]
+    lr_pred = lr_model.predict(features_scaled)[0]
+
+    # Decision Tree - ARTIK DÜZGÜN ÇALIŞACAK
     dt_prob = dt_model.predict_proba(features_scaled)[0][1]
+    dt_pred = dt_model.predict(features_scaled)[0]
+
+    # Random Forest - ARTIK DÜZGÜN ÇALIŞACAK
     rf_prob = rf_model.predict_proba(features_scaled)[0][1]
+    rf_pred = rf_model.predict(features_scaled)[0]
 
     ensemble_prob = (
         lr_prob +
