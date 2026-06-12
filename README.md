@@ -47,7 +47,7 @@ An interactive credit risk analysis interface was built using the trained models
 
 ```bash
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run app/app.py
 ```
 
 ## Project Structure
@@ -73,6 +73,8 @@ streamlit run app.py
 ```
 
 ## Developer
-Erbol Zhanyshov
-Mert Laleli
-Hitit University - Computer Engineering
+Erbol Zhanyshov ---
+
+Mert Laleli ---
+
+*** Hitit University - Computer Engineering ***
