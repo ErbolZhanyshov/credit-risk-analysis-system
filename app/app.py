@@ -20,10 +20,16 @@ st.set_page_config(
 # LOAD MODELS
 # =====================================================
 
-lr_model = joblib.load("models/logistic_regression_model.pkl")
-dt_model = joblib.load("models/decision_tree_model.pkl")
-rf_model = joblib.load("models/random_forest_model.pkl")
-scaler = joblib.load("models/scaler.pkl")
+try:
+    lr_model = joblib.load("models/logistic_regression_model.pkl")
+    dt_model = joblib.load("models/decision_tree_model.pkl")
+    rf_model = joblib.load("models/random_forest_model.pkl")
+    scaler   = joblib.load("models/scaler.pkl")
+    encoders = joblib.load("models/encoders.pkl")
+except FileNotFoundError as e:
+    st.error(f"⚠️ Model dosyası bulunamadı: {e}")
+    st.warning("Lütfen önce 'loan_prediction_analysis.ipynb' dosyasını çalıştırarak modelleri kaydedin.")
+    st.stop()
 
 # =====================================================
 # CUSTOM CSS
@@ -70,16 +76,17 @@ html, body, [class*="css"] {
     color:#6c757d;
 }
 
-.sidebar-card{
-    background:white;
-    padding:15px;
-    border-radius:12px;
-            
+.sidebar-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+}
+
 .stSelectbox,
 .stNumberInput,
-.stSlider{
-    background:white;
-    border-radius:10px;}
+.stSlider {
+    background: white;
+    border-radius: 10px;
 }
 
 </style>
@@ -264,10 +271,7 @@ if analyze:
     gender_v = 1 if gender == "Male" else 0
     married_v = 1 if married == "Yes" else 0
 
-    if dependents == "3+":
-        dependents_v = 3
-    else:
-        dependents_v = int(dependents)
+    dependents_v = encoders["Dependents"].transform([dependents])[0]
 
     education_v = 0 if education == "Graduate" else 1
     self_emp_v = 1 if self_employed == "Yes" else 0
@@ -302,17 +306,17 @@ if analyze:
 
     features_scaled = scaler.transform(features)
 
-    # Logistic Regression
+    # Logistic Regression - scaled features ile eğitildi
     lr_prob = lr_model.predict_proba(features_scaled)[0][1]
     lr_pred = lr_model.predict(features_scaled)[0]
 
-    # Decision Tree - ARTIK DÜZGÜN ÇALIŞACAK
-    dt_prob = dt_model.predict_proba(features_scaled)[0][1]
-    dt_pred = dt_model.predict(features_scaled)[0]
+    # Decision Tree - scaled OLMAYAN (raw) features ile eğitildi
+    dt_prob = dt_model.predict_proba(features)[0][1]
+    dt_pred = dt_model.predict(features)[0]
 
-    # Random Forest - ARTIK DÜZGÜN ÇALIŞACAK
-    rf_prob = rf_model.predict_proba(features_scaled)[0][1]
-    rf_pred = rf_model.predict(features_scaled)[0]
+    # Random Forest - scaled OLMAYAN (raw) features ile eğitildi
+    rf_prob = rf_model.predict_proba(features)[0][1]
+    rf_pred = rf_model.predict(features)[0]
 
     ensemble_prob = (
         lr_prob +

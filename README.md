@@ -1,249 +1,76 @@
-# 🏦 AI-Based Smart Credit Risk Analysis System
+# AI-Based Loan Approval and Credit Risk Analysis System
 
-An intelligent credit approval and risk assessment platform developed using Machine Learning and Streamlit.
+This project uses machine learning to predict whether a customer's loan application will be approved.
 
-This project predicts whether a customer's loan application should be approved by analyzing financial and demographic information. Multiple machine learning algorithms are integrated and compared within an interactive dashboard.
+## Project Scope
 
----
+- Data Preprocessing
+- Exploratory Data Analysis (EDA)
+- Classification Models (Logistic Regression, Decision Tree, Random Forest)
+- Cross Validation
+- Performance Metrics (Accuracy, Precision, Recall, F1)
+- Confusion Matrix
+- ROC Curve & AUC
+- Model Comparison
+- Explainable AI (Feature Importance, LIME)
+- Streamlit Web Application
 
-## 🚀 Project Overview
+## Dataset
 
-Financial institutions process thousands of loan applications every day. Evaluating these applications manually can be slow, inconsistent, and prone to human error.
+The dataset contains demographic and financial information about loan applicants (gender, marital status, education, income, loan amount, credit history, etc.). The target variable is `Loan_Status` (loan approval status), with 3000 application records.
 
-This project aims to support credit decision-making by utilizing machine learning models trained on historical loan application data.
+## Models Used
 
-The system provides:
+| Model | Description |
+|---|---|
+| Logistic Regression | Trained on scaled data |
+| Decision Tree | Trained on raw data |
+| Random Forest | Trained on raw data |
 
-* Credit approval prediction
-* Risk score estimation
-* Multi-model comparison
-* Explainable AI visualizations
-* Interactive Streamlit dashboard
+## Model Comparison
 
----
+The Accuracy, Precision, Recall, and F1 Score metrics of the three models are compared below.
 
-## 📊 Dataset
+![Model Comparison](images/model_comparison.png)
 
-The project uses a loan approval dataset containing applicant demographic and financial information.
+## Streamlit Application
 
-### Features
+An interactive credit risk analysis interface was built using the trained models. Users can enter customer information and instantly view the approval probability from all three models along with the ensemble prediction.
 
-| Feature           | Description                 |
-| ----------------- | --------------------------- |
-| Gender            | Applicant Gender            |
-| Married           | Marital Status              |
-| Dependents        | Number of Dependents        |
-| Education         | Education Level             |
-| Self_Employed     | Employment Status           |
-| ApplicantIncome   | Monthly Income              |
-| CoapplicantIncome | Co-Applicant Income         |
-| LoanAmount        | Requested Loan Amount       |
-| Loan_Amount_Term  | Loan Duration               |
-| Credit_History    | Previous Credit Performance |
-| Property_Area     | Urban / Rural Information   |
+![Streamlit Interface](images/streamlit_app.png)
 
-### Target Variable
+![Streamlit Result Screen](images/streamlit_result.png)
 
-| Variable    | Meaning                     |
-| ----------- | --------------------------- |
-| Loan_Status | Approved (Y) / Rejected (N) |
+### Running the App
 
----
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-## 🤖 Machine Learning Models
+## Project Structure
 
-The following algorithms were trained and evaluated:
-
-### 1. Logistic Regression
-
-* Accuracy: 78.8%
-* Recall: 98.7%
-* F1 Score: 85.8%
-* AUC: 0.739
-
-### 2. Decision Tree
-
-* Accuracy: 69.9%
-* Recall: 77.5%
-* F1 Score: 77.0%
-
-### 3. Random Forest
-
-* Accuracy: 76.4%
-* Recall: 95.0%
-* F1 Score: 83.9%
-
-### 4. Ensemble Model
-
-Average probability generated from:
-
-* Logistic Regression
-* Decision Tree
-* Random Forest
-
-Used as the final recommendation model.
-
----
-
-## 🖥️ Streamlit Dashboard Features
-
-### Single Customer Analysis
-
-Users can enter:
-
-* Gender
-* Marital Status
-* Education
-* Applicant Income
-* Co-Applicant Income
-* Loan Amount
-* Loan Term
-* Credit History
-
-The system instantly predicts:
-
-* Approval Probability
-* Risk Level
-* Model Recommendations
-
----
-
-### Multi-Model Prediction
-
-The dashboard displays predictions from:
-
-* Logistic Regression
-* Decision Tree
-* Random Forest
-* Ensemble Model
-
-allowing direct comparison between models.
-
----
-
-### Explainable AI (XAI)
-
-Feature contribution analysis highlights the most influential variables in the credit decision process.
-
-Important factors include:
-
-* Credit History
-* Applicant Income
-* Loan Amount
-
----
-
-### Model Performance Visualization
-
-The dashboard includes:
-
-* Accuracy Comparison
-* ROC Curve
-* Feature Importance Charts
-* Performance Metrics
-
----
-
-## 🛠️ Technologies Used
-
-### Programming Language
-
-* Python
-
-### Machine Learning
-
-* Scikit-Learn
-
-### Data Processing
-
-* Pandas
-* NumPy
-
-### Visualization
-
-* Matplotlib
-
-### Web Interface
-
-* Streamlit
-
-### Model Persistence
-
-* Joblib
-
----
-
-## 📁 Project Structure
-
-```text
-AI-Credit-Risk-Analysis/
-│
+```
 ├── data/
 │   └── loan_data.csv
-│
 ├── models/
 │   ├── logistic_regression_model.pkl
 │   ├── decision_tree_model.pkl
 │   ├── random_forest_model.pkl
-│   └── scaler.pkl
-│
-├── app.py
-├── loan_prediction_analysis.ipynb
-├── requirements.txt
+│   ├── scaler.pkl
+│   └── encoders.pkl
+├── notebooks/
+│   └── loan_prediction_analysis.ipynb
+├── images/
+│   ├── model_comparison.png
+│   ├── streamlit_app.png
+│   └── streamlit_result.png
+├── app/
+        app.py
 └── README.md
 ```
 
----
-
-## ▶️ Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/ErbolZhanyshov/credit-risk-analysis-system.git
-cd AI-Credit-Risk-Analysis
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run Streamlit:
-
-```bash
-streamlit run app.py
-```
-
----
-
-## 🎓 Academic Information
-
-Developed as a Machine Learning and Artificial Intelligence course project.
-
-**Department:** Computer Engineering
-
-**University:** Hitit University
-
----
-
-## 📌 Future Improvements
-
-* SHAP Integration
-* Bulk Customer Prediction
-* Excel Report Export
-* Real-Time Model Monitoring
-* Advanced Risk Scoring
-* Deep Learning Models
-* Cloud Deployment
-
----
-
-## 👨‍💻 Authors
-
-Developed by:
-
-**Erbol Zhanyshov**
-
-Hitit University – Computer Engineering
+## Developer
+Erbol Zhanyshov
+Mert Laleli
+Hitit University - Computer Engineering
