@@ -41,7 +41,7 @@ An interactive credit risk analysis interface was built using the trained models
 
 ![Streamlit Result Screen](images/streamlit_result.png)
 
-![Streamlit Result Screen](images/streamlit_result.png2)
+![Streamlit Result Screen](images/streamlit_result2.png)
 
 ### Running the App
 
